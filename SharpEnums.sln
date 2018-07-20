@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2042
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpEnums", "SharpEnums\SharpEnums.csproj", "{1BD9FEA1-0809-44DA-A316-A0FA65FFA6BC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1BD9FEA1-0809-44DA-A316-A0FA65FFA6BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BD9FEA1-0809-44DA-A316-A0FA65FFA6BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BD9FEA1-0809-44DA-A316-A0FA65FFA6BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BD9FEA1-0809-44DA-A316-A0FA65FFA6BC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5C5C3EC2-696D-49BB-98E6-4F3F31261EB0}
+	EndGlobalSection
+EndGlobal
