@@ -1,5 +1,5 @@
 # SharpEnums
-
+Enums have issues. This library provides a base class `SharpEnum` to create strongly typed alternatives to enums.
 
 
 ## Current Limitations
