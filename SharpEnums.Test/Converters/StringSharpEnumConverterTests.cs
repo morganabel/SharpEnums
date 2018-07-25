@@ -4,7 +4,7 @@ using Palit.SharpEnums.Converters;
 using SharpEnums.Test.Models;
 using Xunit;
 
-namespace UtilityTests.Converters
+namespace SharpEnums.Test.Converters
 {
     public class StringSharpEnumConverterTests
     {
