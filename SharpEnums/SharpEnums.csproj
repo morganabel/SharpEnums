@@ -4,6 +4,15 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Palit.SharpEnums</AssemblyName>
     <RootNamespace>Palit.SharpEnums</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageProjectUrl>https://github.com/morganabel/SharpEnums</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/morganabel/SharpEnums</RepositoryUrl>
+    <Authors>Morgan Abel</Authors>
+    <Product />
+    <PackageTags>Enum Safe SharpEnums Strong Typed</PackageTags>
+    <Description>Enums have issues. This library provides a base class SharpEnum to create strongly typed alternatives to enums. Flags supported and includes json custom serializers.</Description>
+    <Copyright />
+    <PackageLicenseUrl>https://github.com/morganabel/SharpEnums/blob/master/LICENSE.txt</PackageLicenseUrl>
   </PropertyGroup>
 
   <ItemGroup>
