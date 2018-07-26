@@ -47,15 +47,15 @@ namespace Palit.SharpEnums.Utilities
         }
 
         /// <summary>
-        /// Extension method for getting value or default from IDictionary.
+        /// Extension method for getting value or default from IReadOnlyDictionary.
         /// </summary>
         /// <typeparam name="TKey"></typeparam>
         /// <typeparam name="TValue"></typeparam>
-        /// <param name="dictionary">The dictionary<see cref="IDictionary{TKey, TValue}"/></param>
+        /// <param name="dictionary">The dictionary<see cref="IReadOnlyDictionary{TKey, TValue}"/></param>
         /// <param name="key">The key<see cref="TKey"/></param>
         /// <param name="defaultValue">The defaultValue<see cref="TValue"/></param>
         /// <returns>The <see cref="TValue"/></returns>
-        public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue = default(TValue))
+        public static TValue GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue = default(TValue))
         {
             if (dictionary.TryGetValue(key, out var value))
             {

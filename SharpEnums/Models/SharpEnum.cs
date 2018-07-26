@@ -31,17 +31,22 @@ namespace Palit.SharpEnums.Models
         /// <summary>
         /// Defines the optionsDictionary
         /// </summary>
-        private static readonly Lazy<Dictionary<int, T>> optionsDictionary = new Lazy<Dictionary<int, T>>(GetAllUniqueOptionsAsDictionary);
+        private static readonly Lazy<IReadOnlyDictionary<int, T>> optionsDictionary = new Lazy<IReadOnlyDictionary<int, T>>(GetAllUniqueOptionsAsDictionary);
 
         /// <summary>
         /// Defines the optionsNameDictionary
         /// </summary>
-        private static readonly Lazy<Dictionary<string, T>> optionsNameDictionary = new Lazy<Dictionary<string, T>>(GetOptionsAsNameDictionary);
+        private static readonly Lazy<IReadOnlyDictionary<string, T>> optionsNameDictionary = new Lazy<IReadOnlyDictionary<string, T>>(GetOptionsAsNameDictionary);
 
         /// <summary>
-        /// Defines the allOptions
+        /// Defines the list of all options.
         /// </summary>
         private static readonly Lazy<List<T>> allOptions = new Lazy<List<T>>(GetAllOptions);
+
+        /// <summary>
+        /// Lazy initialized all options sorted by value desc.
+        /// </summary>
+        private static readonly Lazy<KeyValuePair<int, T>[]> allOptionsSortedByValueDesc = new Lazy<KeyValuePair<int, T>[]>(GetOptionsSortedByValueDesc);
 
         /// <summary>
         /// Defines the isFlagsEnum
@@ -52,14 +57,14 @@ namespace Palit.SharpEnums.Models
         /// Gets all unique values as a dictionary.
         /// </summary>
         /// <returns>The <see cref="Dictionary{int, T}"/></returns>
-        private static Dictionary<int, T> GetAllUniqueOptionsAsDictionary() => allOptions.Value
+        private static IReadOnlyDictionary<int, T> GetAllUniqueOptionsAsDictionary() => allOptions.Value
                 .ToDictionary(o => o.Value);
 
         /// <summary>
         /// Gets all options as a dictionary with name as they key.
         /// </summary>
         /// <returns>The <see cref="Dictionary{string, T}"/></returns>
-        private static Dictionary<string, T> GetOptionsAsNameDictionary() => allOptions.Value
+        private static IReadOnlyDictionary<string, T> GetOptionsAsNameDictionary() => allOptions.Value
                 .ToDictionary(o => o.Name);
 
         /// <summary>
@@ -74,6 +79,13 @@ namespace Palit.SharpEnums.Models
                 .Select(pi => (T)pi.GetValue(null))
                 .ToList();
         }
+
+        /// <summary>
+        /// Gets the options sorted by value desc.
+        /// </summary>
+        /// <returns></returns>
+        private static KeyValuePair<int, T>[] GetOptionsSortedByValueDesc() => optionsDictionary.Value
+            .OrderByDescending(o => o.Key).ToArray();
 
         /// <summary>
         /// Determines whether [is flags enum].
@@ -143,19 +155,24 @@ namespace Palit.SharpEnums.Models
                 return DefaultValue;
             }
 
+            // Looks for exact match for flag and non-flag enums.
             if (optionsDictionary.Value.ContainsKey(value))
             {
                 return optionsDictionary.Value[value];
             }
 
+            // Non flag enums should have an exact match.
+            // Throw error here because invalid input for non-flag enum.
             if (!isFlagsEnum.Value)
             {
                 throw new ArgumentOutOfRangeException(nameof(value), "Invalid value without SharpFlagsEnum attribute");
             }
 
+            // Build flag enum.
+            // No exact match found, so must iterate through values and detect flags set.
             var names = new List<string>();
             var outputValue = 0;
-            foreach (var option in optionsDictionary.Value.OrderByDescending(o => o.Key))
+            foreach (var option in allOptionsSortedByValueDesc.Value.Where(o => o.Key <= value))
             {
                 if (option.Key <= 0)
                 {
