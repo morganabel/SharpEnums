@@ -1,8 +1,6 @@
 using Palit.SharpEnums.Models;
 using Palit.SharpEnums.Attributes;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace SharpEnums.Test.Attributes
@@ -18,6 +16,16 @@ namespace SharpEnums.Test.Attributes
 
             Assert.NotNull(exception);
             Assert.IsType<ArgumentOutOfRangeException>(exception);
+        }
+
+        [Fact]
+        public void ItShouldWorkWhenNoFlagsExactValue()
+        {
+            var validValue = 3;
+
+            var orange = TypicalEnum.FromValue(validValue);
+
+            Assert.StrictEqual(TypicalEnum.Orange, orange);
         }
 
         [Fact]
@@ -52,6 +60,21 @@ namespace SharpEnums.Test.Attributes
             Assert.True(redBlackEnum.HasFlag(FlagsEnum.Red));
             Assert.True(redBlackEnum.HasFlag(FlagsEnum.Black));
         }
+    }
+
+    internal class TypicalEnum : SharpEnum<TypicalEnum>
+    {
+        public static TypicalEnum None = new TypicalEnum(nameof(None), 0);
+
+        public static TypicalEnum Black = new TypicalEnum(nameof(Black), 1);
+
+        public static TypicalEnum Red = new TypicalEnum(nameof(Red), 2);
+
+        public static TypicalEnum Orange = new TypicalEnum(nameof(Orange), 3);
+
+        public static TypicalEnum Green = new TypicalEnum(nameof(Green), 4);
+
+        public TypicalEnum(string name, int value) : base(name, value) { }
     }
 
     internal class NoFlagsEnum : SharpEnum<NoFlagsEnum>

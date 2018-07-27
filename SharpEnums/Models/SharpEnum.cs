@@ -126,12 +126,18 @@ namespace Palit.SharpEnums.Models
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SharpEnum{T}"/> class.
+        /// Initializes a new instance of the <see cref="SharpEnum{T}" /> class.
         /// </summary>
-        /// <param name="name">The name<see cref="string"/></param>
-        /// <param name="val">The val<see cref="int"/></param>
+        /// <param name="name">The name<see cref="string" /></param>
+        /// <param name="val">The val<see cref="int" /></param>
+        /// <exception cref="ArgumentException">Enum values label cannot be null or whitespace. - name</exception>
         protected SharpEnum(string name, int val)
         {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException("Enum values label cannot be null or whitespace.", nameof(name));
+            }
+
             Value = val;
             Name = name;
         }
