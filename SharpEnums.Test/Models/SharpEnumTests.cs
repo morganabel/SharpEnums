@@ -70,6 +70,18 @@ namespace SharpEnums.Test.Models
         }
 
         [Theory]
+        [InlineData(-1)]
+        [InlineData(-2)]
+        [InlineData(-3)]
+        public void FromValueHandlesNegativeValuesWithoutFlags(int value)
+        {
+            var newEnum = NegativeEnum.FromValue(value);
+
+            Assert.Equal(value, newEnum.Value);
+            Assert.NotStrictEqual(NegativeEnum.DefaultValue, newEnum);
+        }
+
+        [Theory]
         [ClassData(typeof(SharpEnumFromValueTheoryGenerator))]
         public void FromValueLoadsCorrectEnum(int value, string expectedName, TestSharpEnum hasEnumFlags)
         {
@@ -211,6 +223,19 @@ namespace SharpEnums.Test.Models
             Assert.True(hasTimeFlag);
             Assert.True(hasPartyTimeFlag);
         }
+    }
+
+    internal class NegativeEnum : SharpEnum<NegativeEnum>
+    {
+        public static NegativeEnum None = new NegativeEnum(nameof(None), 0);
+
+        public static NegativeEnum One = new NegativeEnum(nameof(One), -1);
+
+        public static NegativeEnum Two = new NegativeEnum(nameof(Two), -2);
+
+        public static NegativeEnum Three = new NegativeEnum(nameof(Three), -3);
+
+        public NegativeEnum(string name, int val) : base(name, val) { }
     }
 
     [SharpEnumFlags]

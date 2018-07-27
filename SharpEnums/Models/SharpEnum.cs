@@ -156,11 +156,6 @@ namespace Palit.SharpEnums.Models
         /// <returns></returns>
         public static T FromValue(int value)
         {
-            if (value <= 0)
-            {
-                return DefaultValue;
-            }
-
             // Looks for exact match for flag and non-flag enums.
             if (optionsDictionary.Value.ContainsKey(value))
             {
@@ -172,6 +167,11 @@ namespace Palit.SharpEnums.Models
             if (!isFlagsEnum.Value)
             {
                 throw new ArgumentOutOfRangeException(nameof(value), "Invalid value without SharpFlagsEnum attribute");
+            }
+
+            if (value <= 0)
+            {
+                return DefaultValue;
             }
 
             // Build flag enum.
