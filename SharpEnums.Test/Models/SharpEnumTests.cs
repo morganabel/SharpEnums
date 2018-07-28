@@ -92,6 +92,48 @@ namespace SharpEnums.Test.Models
             Assert.True(newEnum.HasFlag(hasEnumFlags));
         }
 
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1 << 1)]
+        [InlineData(3)]
+        public void TryFromValueReturnsTrueIfMatch(int value)
+        {
+            var result = TestSharpEnum.TryFromValue(value, out var output);
+
+            Assert.True(result);
+        }
+
+        [Theory]
+        [InlineData(-1)]
+        [InlineData(TestSharpEnum.InvalidValue)]
+        public void TryFromValueReturnsFalseIfNoMatch(int value)
+        {
+            var result = TestSharpEnum.TryFromValue(value, out var output);
+
+            Assert.False(result);
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1 << 1)]
+        [InlineData(3)]
+        public void TryFromValueSetsEnumIfMatch(int value)
+        {
+            TestSharpEnum.TryFromValue(value, out var @enum);
+
+            Assert.Equal(value, @enum.Value);
+        }
+
+        [Theory]
+        [InlineData(-1)]
+        [InlineData(TestSharpEnum.InvalidValue)]
+        public void TryFromValueSetsDefaultEnumIfNoMatch(int value)
+        {
+            TestSharpEnum.TryFromValue(value, out var @enum);
+
+            Assert.StrictEqual(TestSharpEnum.DefaultValue, @enum);
+        }
+
         [Fact]
         public void OnFromNameNullThrowsArgumentNullException()
         {
@@ -139,6 +181,59 @@ namespace SharpEnums.Test.Models
 
             Assert.Equal(expectedName, parsedEnum.Name);
             Assert.Equal(expectedValue, parsedEnum.Value);
+        }
+
+        [Theory]
+        [InlineData("None", "None", 0)]
+        [InlineData("Sleepy", "Sleepy", 1 << 2)]
+        [InlineData("sleepy", "Sleepy", 1 << 2)]
+        [InlineData("PartyTime", "PartyTime", 3)]
+        [InlineData("party, time", "PartyTime", 3)]
+        [InlineData("Sleepy, party", "Party, Sleepy", (1 << 2) + (1 << 0))]
+        [InlineData("Sleepy, party", "Sleepy", 1 << 2, false)]
+        public void ItShouldReturnTrueWhenTryParseSuccess(string name, string expectedName, int expectedValue, bool caseInsensitive = true)
+        {
+            var success = TestSharpEnum.TryParse(name, out var @enum, caseInsensitive);
+
+            Assert.True(success);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("InvalidName")]
+        public void ItShouldReturnFalseWhenTryParseFail(string name)
+        {
+            var success = TestSharpEnum.TryParse(name, out var @enum, true);
+
+            Assert.False(success);
+        }
+
+        [Theory]
+        [InlineData("None", "None", 0)]
+        [InlineData("Sleepy", "Sleepy", 1 << 2)]
+        [InlineData("sleepy", "Sleepy", 1 << 2)]
+        [InlineData("PartyTime", "PartyTime", 3)]
+        [InlineData("party, time", "PartyTime", 3)]
+        [InlineData("Sleepy, party", "Party, Sleepy", (1 << 2) + (1 << 0))]
+        [InlineData("Sleepy, party", "Sleepy", 1 << 2, false)]
+        public void ItShouldSetEnumWhenTryParseSuccess(string name, string expectedName, int expectedValue, bool caseInsensitive = true)
+        {
+            TestSharpEnum.TryParse(name, out var parsedEnum, caseInsensitive);
+
+            Assert.Equal(expectedName, parsedEnum.Name);
+            Assert.Equal(expectedValue, parsedEnum.Value);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("InvalidName")]
+        public void ItShouldSetDefaultWhenTryParseFail(string name)
+        {
+            TestSharpEnum.TryParse(name, out var parsedEnum, true);
+
+            Assert.Equal(TestSharpEnum.DefaultValue, parsedEnum);
         }
 
         [Fact]

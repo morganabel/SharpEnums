@@ -51,6 +51,28 @@ namespace SharpEnums.Test.Converters
             Assert.True(instance.WhatTimeIsIt.HasFlag(TestSharpEnum.PartyTime | TestSharpEnum.Hungry));
         }
 
+        [Fact]
+        public void ItThrowsOnUnsafeDeserializeInvalidValue()
+        {
+            var json = $"{{ \"id\": \"123\", \"whatTimeIsIt\": {TestSharpEnum.InvalidValue} }}";
+
+            var exception = Record.Exception(() => JsonConvert.DeserializeObject<TestEnumConverterClass>(json));
+
+            Assert.NotNull(exception);
+            Assert.IsType<JsonSerializationException>(exception);
+        }
+
+        [Fact]
+        public void ItShouldReturnDefaultValueOnSafeDeserializeInvalidValue()
+        {
+            var json = $"{{ \"id\": \"123\", \"whatTimeIsIt\": {TestSharpEnum.InvalidValue} }}";
+
+            var instance = JsonConvert.DeserializeObject<TestEnumSafeConverterClass>(json);
+
+            Assert.NotNull(instance);
+            Assert.StrictEqual(TestSharpEnum.DefaultValue, instance.WhatTimeIsIt);
+        }
+
         private TestEnumConverterClass GetTestInstance(TestSharpEnum enumValue) => new TestEnumConverterClass()
         {
             WhatTimeIsIt = enumValue
@@ -64,6 +86,16 @@ namespace SharpEnums.Test.Converters
 
         [JsonProperty("whatTimeIsIt")]
         [JsonConverter(typeof(StringSharpEnumConverter<TestSharpEnum>), true)]
+        public TestSharpEnum WhatTimeIsIt { get; set; }
+    }
+
+    internal class TestEnumSafeConverterClass
+    {
+        [JsonProperty("id")]
+        public string Id { get; set; } = "123";
+
+        [JsonProperty("whatTimeIsIt")]
+        [JsonConverter(typeof(StringSharpEnumConverter<TestSharpEnum>), true, true)]
         public TestSharpEnum WhatTimeIsIt { get; set; }
     }
 }

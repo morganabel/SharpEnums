@@ -25,6 +25,15 @@ namespace Palit.SharpEnums.Converters
         public bool AllowIntegerValues { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether [safe convert].
+        /// Safe convert uses TryParse and TryFromValue and will not throw errors on unmatched input.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [safe convert]; otherwise, <c>false</c>.
+        /// </value>
+        public bool SafeConvert { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="StringSharpEnumConverter{T}"/> class.
         /// </summary>
         public StringSharpEnumConverter() => AllowIntegerValues = true;
@@ -32,8 +41,19 @@ namespace Palit.SharpEnums.Converters
         /// <summary>
         /// Initializes a new instance of the <see cref="StringSharpEnumConverter{T}"/> class.
         /// </summary>
-        /// <param name="camelCaseText">The camelCaseText<see cref="bool"/></param>
+        /// <param name="camelCaseText">if set to <c>true</c> [camel case text].</param>
         public StringSharpEnumConverter(bool camelCaseText) : this() => CamelCaseText = camelCaseText;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StringSharpEnumConverter{T}"/> class.
+        /// </summary>
+        /// <param name="camelCaseText">if set to <c>true</c> [camel case text].</param>
+        /// <param name="safeConvert">if set to <c>true</c> [safe convert].</param>
+        public StringSharpEnumConverter(bool camelCaseText, bool safeConvert) : this()
+        {
+            CamelCaseText = camelCaseText;
+            SafeConvert = safeConvert;
+        }
 
         /// <summary>
         /// Determines if this converter is applicable.
@@ -58,6 +78,12 @@ namespace Palit.SharpEnums.Converters
             {
                 if (reader.TokenType == JsonToken.String)
                 {
+                    if (SafeConvert)
+                    {
+                        SharpEnum<T>.TryParse(reader.Value.ToString(), out var output, true);
+                        return output;
+                    }
+
                     return SharpEnum<T>.Parse(reader.Value.ToString(), true);
                 }
 
@@ -69,6 +95,12 @@ namespace Palit.SharpEnums.Converters
                     }
 
                     var intValue = Convert.ToInt32(reader.Value);
+
+                    if (SafeConvert)
+                    {
+                        SharpEnum<T>.TryFromValue(intValue, out var output);
+                        return output;
+                    }
 
                     return SharpEnum<T>.FromValue(intValue);
                 }

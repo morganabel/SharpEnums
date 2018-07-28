@@ -10,6 +10,7 @@ Keep in mind that there are several limitations to this library right now:
 ## Quick Start
 SharpEnums are defined by inheriting from the SharpEnum abstract class:
 ```csharp
+// Allow Flags
 [SharpEnumFlags]
 public class TestSharpEnum : SharpEnum<TestSharpEnum>
 {
@@ -32,6 +33,22 @@ public class TestSharpEnum : SharpEnum<TestSharpEnum>
     public static TestSharpEnum All = new TestSharpEnum(nameof(All), Party.Value + Time.Value + Sleepy.Value + Hungry.Value);
 
     public TestSharpEnum(string name, int val) : base(name, val) { }
+}
+
+// No Flags Allowed
+public class TypicalEnum : SharpEnum<TypicalEnum>
+{
+    public static TypicalEnum None = new TypicalEnum(nameof(None), 0);
+
+    public static TypicalEnum Black = new TypicalEnum(nameof(Black), 1);
+
+    public static TypicalEnum Red = new TypicalEnum(nameof(Red), 2);
+
+    public static TypicalEnum Orange = new TypicalEnum(nameof(Orange), 3);
+
+    public static TypicalEnum Green = new TypicalEnum(nameof(Green), 4);
+
+    public TypicalEnum(string name, int value) : base(name, value) { }
 }
 ```
 
@@ -56,6 +73,24 @@ public TestSharpEnum WhatTimeIsIt { get; set; }
 // Will serialize to string array i.e. "WhatTimeIsIt": ["partyTime", "hungry"]
 // Second parameter is optional camel-casing.
 [JsonConverter(typeof(StringArraySharpEnumConverter<TestSharpEnum>), true)]
+public TestSharpEnum WhatTimeIsIt { get; set; }
+```
+
+## Safe Deserialization
+Each serializer also supports "safe" conversion. By default, invalid values will throw a `JsonSerializationException` on deserialization. By enabling safe conversion, invalid values will be deserialized to the default value rather than throw an error.
+
+Safe deserialization is supported by each converter:
+```csharp
+// Second parameter is safe conversion boolean.
+[JsonConverter(typeof(IntSharpEnumConverter<TestSharpEnum>), true)]
+public TestSharpEnum WhatTimeIsIt { get; set; }
+
+// Third parameter is safe conversion boolean.
+[JsonConverter(typeof(StringSharpEnumConverter<TestSharpEnum>), true, true)]
+public TestSharpEnum WhatTimeIsIt { get; set; }
+
+// Third parameter is safe conversion boolean.
+[JsonConverter(typeof(StringArraySharpEnumConverter<TestSharpEnum>), true, true)]
 public TestSharpEnum WhatTimeIsIt { get; set; }
 ```
 
@@ -89,9 +124,19 @@ if (enumInstance.HasFlag(TestSmartEnum.Party)) {
 var enumInstance = TestSmartEnum.FromValue(11);
 ```
 
+### Try from value
+```csharp
+var success = TestSharpEnum.TryFromValue(11, out var enumInstance);
+```
+
 ### Parse
 ```csharp
 var enumInstance = TestSmartEnum.Parse("partyTime", caseInsensitive: true);
+```
+
+### Try parse
+```csharp
+var success = TestSmartEnum.Parse("partyTime", out var enumInstance, caseInsensitive: true);
 ```
 
 ### Operations
