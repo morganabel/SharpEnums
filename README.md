@@ -136,7 +136,7 @@ var enumInstance = TestSmartEnum.Parse("partyTime", caseInsensitive: true);
 
 ### Try parse
 ```csharp
-var success = TestSmartEnum.Parse("partyTime", out var enumInstance, caseInsensitive: true);
+var success = TestSmartEnum.TryParse("partyTime", out var enumInstance, caseInsensitive: true);
 ```
 
 ### Operations
