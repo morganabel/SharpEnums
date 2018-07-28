@@ -13,6 +13,7 @@
     <Description>Enums have issues. This library provides a base class SharpEnum to create strongly typed alternatives to enums. Flags supported and includes json custom serializers.</Description>
     <Copyright />
     <PackageLicenseUrl>https://github.com/morganabel/SharpEnums/blob/master/LICENSE.txt</PackageLicenseUrl>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
